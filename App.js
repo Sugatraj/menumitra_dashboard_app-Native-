@@ -130,7 +130,7 @@ const getHeaderTitle = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route);
   switch (routeName) {
     case 'Home':
-      return 'Dashboard';
+      return 'Home';
     case 'ManageRestaurants':
       return 'Manage Restaurants';
     case 'ManageOwner':

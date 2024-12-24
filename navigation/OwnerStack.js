@@ -31,7 +31,7 @@ export default function OwnerStack() {
         component={CreateOwnerScreen}
         options={{
           title: "Add Owner",
-          headerShown: true
+          headerShown: false
         }}
       />
       <Stack.Screen 

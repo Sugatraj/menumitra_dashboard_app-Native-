@@ -23,6 +23,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5e0928e1-1f4a-4422-8837-6922cddd7227"
+      }
+    },
+    "owner": "menumitra"
   }
 }

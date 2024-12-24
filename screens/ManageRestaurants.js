@@ -11,6 +11,7 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { useRestaurants } from '../hooks/useRestaurants';
 import { useFocusEffect } from '@react-navigation/native';
+import { useOwners } from '../hooks/useOwners';
 
 export default function ManageRestaurants({ navigation }) {
   const { 
@@ -20,6 +21,8 @@ export default function ManageRestaurants({ navigation }) {
     refreshRestaurants,
     deleteRestaurant 
   } = useRestaurants();
+  const { getOwner } = useOwners();
+  const [restaurantsWithOwners, setRestaurantsWithOwners] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Refresh restaurants when screen comes into focus
@@ -28,6 +31,33 @@ export default function ManageRestaurants({ navigation }) {
       refreshRestaurants();
     }, [])
   );
+
+  useEffect(() => {
+    loadRestaurantsWithOwners();
+  }, [restaurants]);
+
+  const loadRestaurantsWithOwners = async () => {
+    try {
+      const updatedRestaurants = await Promise.all(
+        restaurants.map(async (restaurant) => {
+          if (restaurant.owner) {
+            const ownerData = await getOwner(restaurant.owner);
+            return {
+              ...restaurant,
+              ownerName: ownerData?.name || 'Not Assigned'
+            };
+          }
+          return {
+            ...restaurant,
+            ownerName: 'Not Assigned'
+          };
+        })
+      );
+      setRestaurantsWithOwners(updatedRestaurants);
+    } catch (error) {
+      console.error('Error loading owners:', error);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -44,34 +74,53 @@ export default function ManageRestaurants({ navigation }) {
     restaurant.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderItem = ({ item }) => {
-    console.log('Restaurant in list:', item);
-    return (
-      <TouchableOpacity 
-        style={styles.card}
-        onPress={() => {
-          console.log('Navigating to restaurant with ID:', item.id);
-          navigation.navigate('ViewRestaurant', { restaurantId: item.id });
-        }}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.mainColumn}>
-            <Text style={styles.nameText}>{item.name}</Text>
-            <Text style={styles.locationText}>{item.address}</Text>
+  const renderItem = ({ item }) => (
+    <TouchableOpacity 
+      style={styles.card}
+      onPress={() => navigation.navigate('ViewRestaurant', { restaurantId: item.id })}
+    >
+      <View style={styles.cardContent}>
+        {/* First Row */}
+        <View style={styles.row}>
+          <View style={styles.leftColumn}>
+            
+            <Text style={[styles.value, styles.boldText]}>{item.name}</Text>
           </View>
-          
-          <View style={styles.statusColumn}>
+          <View style={styles.rightColumn}>
+         
             <Text style={[
               styles.statusText,
-              { color: item.isActive ? '#28a745' : '#dc3545' }
+              { color: item.isOpen ? '#28a745' : '#dc3545' }
             ]}>
-              {item.isActive ? 'Active' : 'Inactive'}
+              {item.isOpen ? 'Open' : 'Closed'}
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
-    );
-  };
+
+        {/* Second Row */}
+        <View style={styles.row}>
+          <View style={styles.leftColumn}>
+            
+            <Text style={styles.value}>{item.id}</Text>
+          </View>
+          <View style={styles.rightColumn}>
+           
+            <Text style={styles.value}>{item.mobile}</Text>
+          </View>
+        </View>
+
+        {/* Third Row */}
+        <View style={styles.row}>
+          <View style={styles.leftColumn}>
+            <View style={styles.ownerRow}>
+              <FontAwesome name="user-o" size={16} color="#666" style={styles.ownerIcon} />
+              <Text style={styles.value}>{item.ownerName}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -98,7 +147,7 @@ export default function ManageRestaurants({ navigation }) {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <FlatList
-          data={filteredRestaurants}
+          data={restaurantsWithOwners}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           style={styles.list}
@@ -138,41 +187,44 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
+    backgroundColor: '#fff',
     marginHorizontal: 10,
     marginVertical: 5,
-    borderRadius: 5,
-    elevation: 2,
-    shadowColor: "#000",
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   cardContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    padding: 15,
   },
-  mainColumn: {
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  leftColumn: {
     flex: 1,
   },
-  nameText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+  rightColumn: {
+    flex: 1,
+    alignItems: 'flex-end',
   },
-  locationText: {
+  label: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
+  },
+  value: {
     fontSize: 14,
-    color: "#666",
-    marginTop: 5,
-  },
-  statusColumn: {
-    alignItems: "flex-end",
+    color: '#333',
+    fontWeight: '500',
   },
   statusText: {
     fontSize: 14,
-    fontWeight: "500",
-    marginBottom: 5,
+    fontWeight: '500',
   },
   deleteButton: {
     padding: 5,
@@ -207,5 +259,16 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+  },
+  ownerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ownerIcon: {
+    marginRight: 8,
+  },
+  boldText: {
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 }); 
