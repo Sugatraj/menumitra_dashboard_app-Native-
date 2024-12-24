@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, SafeAreaView, View, Text, StyleSheet, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
@@ -15,21 +15,35 @@ function CustomDrawerContent(props) {
     <SafeAreaView style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerHeader}>
-          <Text style={styles.drawerTitle}>Menu</Text>
+          <Text style={styles.drawerTitle}>Dashboard</Text>
         </View>
         <DrawerItem
           label="Manage Restaurants"
           icon={({ color, size }) => (
-            <FontAwesome name="store" size={size} color={color} />
+            <FontAwesome name="building" size={size} color={color} />
           )}
-          onPress={() => props.navigation.navigate('ManageRestaurants')}
+          onPress={() => {
+            props.navigation.navigate("MainStack", {
+              screen: "Root",
+              params: {
+                screen: "ManageRestaurants",
+              },
+            });
+          }}
         />
         <DrawerItem
           label="Manage Owners"
           icon={({ color, size }) => (
             <FontAwesome name="users" size={size} color={color} />
           )}
-          onPress={() => props.navigation.navigate('ManageOwner')}
+          onPress={() => {
+            props.navigation.navigate("MainStack", {
+              screen: "Root",
+              params: {
+                screen: "ManageOwner",
+              },
+            });
+          }}
         />
         <DrawerItem
           label="Logout"
@@ -38,7 +52,20 @@ function CustomDrawerContent(props) {
           )}
           onPress={() => {
             // Add your logout logic here
-            alert('Logout functionality to be implemented');
+            Alert.alert("Logout", "Are you sure you want to logout?", [
+              {
+                text: "Cancel",
+                style: "cancel",
+              },
+              {
+                text: "Logout",
+                style: "destructive",
+                onPress: () => {
+                  // Add logout logic here
+                  alert("Logging out...");
+                },
+              },
+            ]);
           }}
         />
       </DrawerContentScrollView>

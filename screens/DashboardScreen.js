@@ -1,30 +1,58 @@
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
 export default function DashboardScreen({ navigation, route }) {
-  const email = route?.params?.email || 'User';
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
-      <Text style={styles.welcomeText}>Welcome, {email}</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.tilesContainer}>
+        <View style={styles.tile}>
+          <Text style={styles.tileNumber}>12</Text>
+          <Text style={styles.tileText}>Total Owners</Text>
+        </View>
+
+        <View style={styles.tile}>
+          <Text style={styles.tileNumber}>25</Text>
+          <Text style={styles.tileText}>Total Restaurants</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
+  },
+  tilesContainer: {
+    flexDirection: 'row',
+    padding: 16,
+    justifyContent: 'space-between',
+  },
+  tile: {
     backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    width: '48%',
     alignItems: 'center',
-    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  title: {
-    fontSize: 24,
+  tileNumber: {
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 8,
+    color: '#333',
   },
-  welcomeText: {
-    fontSize: 18,
+  tileText: {
+    fontSize: 14,
     color: '#666',
+    textAlign: 'center',
   },
 }); 

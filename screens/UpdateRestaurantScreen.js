@@ -8,9 +8,12 @@ import {
   TouchableOpacity,
   Switch,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useRestaurants } from '../hooks/useRestaurants';
+import * as ImagePicker from 'expo-image-picker';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function UpdateRestaurantScreen({ route, navigation }) {
   const { restaurant } = route.params || {};
@@ -36,6 +39,7 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
     hotelStatus: restaurant?.hotelStatus || false,
     isOpen: restaurant?.isOpen || false,
     address: restaurant?.address || '',
+    image: restaurant?.image || null,
   });
 
   useEffect(() => {
@@ -68,6 +72,24 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
     }
   };
 
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setFormData({ ...formData, image: result.assets[0].uri });
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      alert('Failed to pick image');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -79,6 +101,21 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
+        {/* Image Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Restaurant Image</Text>
+          <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
+            {formData.image ? (
+              <Image source={{ uri: formData.image }} style={styles.image} />
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <FontAwesome name="camera" size={40} color="#666" />
+                <Text style={styles.placeholderText}>Tap to add image</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
         {/* Basic Information */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Basic Information</Text>
@@ -285,5 +322,30 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  imageContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  placeholderContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  placeholderText: {
+    marginTop: 10,
+    color: '#666',
+    fontSize: 16,
   },
 });
