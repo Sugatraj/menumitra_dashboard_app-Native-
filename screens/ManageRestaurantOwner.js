@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,17 +10,32 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useOwners } from '../hooks/useOwners';
+import { useFocusEffect } from '@react-navigation/native';
+import { ownerService } from '../services/ownerService';
 
 export default function ManageRestaurantOwner({ navigation }) {
-  const { owners, loading, error, refreshOwners } = useOwners();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [entriesPerPage, setEntriesPerPage] = useState('10');
+  const [owners, setOwners] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Filter owners based on search query
-  const filteredOwners = owners.filter(owner => 
-    owner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    owner.mobile.includes(searchQuery)
+  const loadOwners = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await ownerService.getAllOwners();
+      setOwners(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Use useFocusEffect to reload data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadOwners();
+    }, [loadOwners])
   );
 
   const renderItem = ({ item }) => (
@@ -61,7 +76,7 @@ export default function ManageRestaurantOwner({ navigation }) {
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity onPress={refreshOwners}>
+          <TouchableOpacity onPress={loadOwners}>
             <Text style={styles.retryText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -71,12 +86,12 @@ export default function ManageRestaurantOwner({ navigation }) {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <FlatList
-          data={filteredOwners}
+          data={owners}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           style={styles.list}
           refreshing={loading}
-          onRefresh={refreshOwners}
+          onRefresh={loadOwners}
         />
       )}
 
@@ -239,7 +254,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: 'white',
-    marginHorizontal: 30,
+    marginHorizontal: 10,
     marginVertical: 8,
     borderRadius: 8,
     elevation: 3,
@@ -247,6 +262,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  
   },
   cardContent: {
     flexDirection: 'row',

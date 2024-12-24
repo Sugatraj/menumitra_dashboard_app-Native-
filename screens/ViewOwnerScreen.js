@@ -40,13 +40,34 @@ export default function ViewOwnerScreen({ route, navigation }) {
     }, [loadOwner])
   );
 
-  const handleDelete = async () => {
-    try {
-      await ownerService.deleteOwner(owner.id);
-      navigation.goBack();
-    } catch (err) {
-      setError(err.message);
-    }
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Owner',
+      'Are you sure you want to delete this owner?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              await ownerService.deleteOwner(owner.id);
+              navigation.goBack();
+            } catch (err) {
+              setError(err.message);
+              Alert.alert('Error', 'Failed to delete owner');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   React.useLayoutEffect(() => {
@@ -93,16 +114,10 @@ export default function ViewOwnerScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{owner.name}</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity
-            style={[styles.headerButton, styles.editButton]}
-            onPress={() => navigation.navigate('UpdateOwner', { ownerData: owner })}
-          >
-            <FontAwesome name="edit" size={20} color="#67B279" />
-          </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{owner.name}</Text>
           <TouchableOpacity
             style={[styles.headerButton, styles.deleteButton]}
             onPress={handleDelete}
@@ -110,48 +125,55 @@ export default function ViewOwnerScreen({ route, navigation }) {
             <FontAwesome name="trash" size={20} color="#dc3545" />
           </TouchableOpacity>
         </View>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal Information</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Name:</Text>
-          <Text style={styles.value}>{owner.name}</Text>
+        
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Name:</Text>
+            <Text style={styles.value}>{owner.name}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Mobile:</Text>
+            <Text style={styles.value}>{owner.mobile}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{owner.email}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Address:</Text>
+            <Text style={styles.value}>{owner.address}</Text>
+          </View>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Mobile:</Text>
-          <Text style={styles.value}>{owner.mobile}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.value}>{owner.email}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Address:</Text>
-          <Text style={styles.value}>{owner.address}</Text>
-        </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Subscription Details</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Remaining Days:</Text>
-          <Text style={styles.value}>{owner.subscription.remainingDays}</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subscription Details</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Remaining Days:</Text>
+            <Text style={styles.value}>{owner.subscription.remainingDays}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Hotels Allowed:</Text>
+            <Text style={styles.value}>{owner.subscription.hotelsAllowed}</Text>
+          </View>
         </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Hotels Allowed:</Text>
-          <Text style={styles.value}>{owner.subscription.hotelsAllowed}</Text>
-        </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Hotel Information</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Hotels Owned:</Text>
-          <Text style={styles.value}>{owner.hotelsOwned}</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Hotel Information</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Hotels Owned:</Text>
+            <Text style={styles.value}>{owner.hotelsOwned}</Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      <TouchableOpacity 
+        style={styles.fab}
+        onPress={() => navigation.navigate('UpdateOwner', { ownerData: owner })}
+      >
+        <FontAwesome name="edit" size={24} color="white" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
@@ -186,7 +208,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#67B279',
     width: 56,
     height: 56,
     borderRadius: 28,
@@ -241,5 +263,8 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#ffebee',
+  },
+  scrollView: {
+    flex: 1,
   },
 }); 

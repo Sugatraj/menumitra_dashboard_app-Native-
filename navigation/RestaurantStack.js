@@ -22,13 +22,11 @@ export default function RestaurantStack() {
       <Stack.Screen 
         name="ViewRestaurant" 
         component={RestaurantDetailsScreen}
-        options={{
-          title: 'Restaurant Details'
-        }}
       />
       <Stack.Screen 
         name="UpdateRestaurant" 
         component={UpdateRestaurantScreen}
+        initialParams={{ restaurant: null }}
       />
     </Stack.Navigator>
   );

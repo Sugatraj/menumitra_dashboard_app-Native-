@@ -13,29 +13,29 @@ import { Picker } from '@react-native-picker/picker';
 import { useRestaurants } from '../hooks/useRestaurants';
 
 export default function UpdateRestaurantScreen({ route, navigation }) {
-  const { restaurant } = route.params;
+  const { restaurant } = route.params || {};
   const { getRestaurant, updateRestaurant } = useRestaurants();
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: restaurant.name,
-    fssaiNumber: restaurant.fssaiNumber,
-    gstNumber: restaurant.gstNumber,
+    name: restaurant?.name || '',
+    fssaiNumber: restaurant?.fssaiNumber || '',
+    gstNumber: restaurant?.gstNumber || '',
     mobile: '',
     serviceCharges: '',
     gst: '',
-    vegNonveg: 'Vegetarian',
+    vegNonveg: restaurant?.vegNonveg || 'Vegetarian',
     owner: '',
-    restaurantType: restaurant.restaurantType,
-    upiId: '',
+    restaurantType: restaurant?.restaurantType || '',
+    upiId: restaurant?.upiId || '',
     website: '',
     instagram: '',
     facebook: '',
     whatsapp: '',
     googleReview: '',
     googleBusinessLink: '',
-    hotelStatus: true,
-    isOpen: true,
-    address: '',
+    hotelStatus: restaurant?.hotelStatus || false,
+    isOpen: restaurant?.isOpen || false,
+    address: restaurant?.address || '',
   });
 
   useEffect(() => {

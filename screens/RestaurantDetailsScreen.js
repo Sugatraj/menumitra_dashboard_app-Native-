@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useRestaurants } from '../hooks/useRestaurants';
@@ -85,26 +86,34 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (error || !restaurant) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error || 'Restaurant not found'}</Text>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.linkText}>Go Back</Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>{error || 'Restaurant not found'}</Text>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={styles.linkText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         {restaurant.image && (
           <Image
             source={{ uri: restaurant.image }}
@@ -237,7 +246,7 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
       >
         <FontAwesome name="edit" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -248,6 +257,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   centered: {
     flex: 1,

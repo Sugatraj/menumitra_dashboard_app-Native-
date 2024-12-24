@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -10,9 +10,46 @@ import BottomTabNavigator from './navigation/BottomTabNavigator';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+function CustomDrawerContent(props) {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <DrawerContentScrollView {...props}>
+        <View style={styles.drawerHeader}>
+          <Text style={styles.drawerTitle}>Menu</Text>
+        </View>
+        <DrawerItem
+          label="Manage Restaurants"
+          icon={({ color, size }) => (
+            <FontAwesome name="store" size={size} color={color} />
+          )}
+          onPress={() => props.navigation.navigate('ManageRestaurants')}
+        />
+        <DrawerItem
+          label="Manage Owners"
+          icon={({ color, size }) => (
+            <FontAwesome name="users" size={size} color={color} />
+          )}
+          onPress={() => props.navigation.navigate('ManageOwner')}
+        />
+        <DrawerItem
+          label="Logout"
+          icon={({ color, size }) => (
+            <FontAwesome name="sign-out" size={size} color={color} />
+          )}
+          onPress={() => {
+            // Add your logout logic here
+            alert('Logout functionality to be implemented');
+          }}
+        />
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+}
+
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
+      drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerPosition: 'right',
         headerShown: false,
@@ -81,6 +118,18 @@ const getHeaderTitle = (route) => {
       return 'Dashboard';
   }
 };
+
+const styles = StyleSheet.create({
+  drawerHeader: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  drawerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});
 
 export default function App() {
   return (
