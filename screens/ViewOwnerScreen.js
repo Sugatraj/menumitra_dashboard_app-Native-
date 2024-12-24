@@ -93,56 +93,65 @@ export default function ViewOwnerScreen({ route, navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Name:</Text>
-            <Text style={styles.value}>{owner.name}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Mobile:</Text>
-            <Text style={styles.value}>{owner.mobile}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{owner.email}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Address:</Text>
-            <Text style={styles.value}>{owner.address}</Text>
-          </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{owner.name}</Text>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={[styles.headerButton, styles.editButton]}
+            onPress={() => navigation.navigate('UpdateOwner', { ownerData: owner })}
+          >
+            <FontAwesome name="edit" size={20} color="#67B279" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.headerButton, styles.deleteButton]}
+            onPress={handleDelete}
+          >
+            <FontAwesome name="trash" size={20} color="#dc3545" />
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Subscription Details</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Remaining Days:</Text>
-            <Text style={styles.value}>{owner.subscription.remainingDays}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Hotels Allowed:</Text>
-            <Text style={styles.value}>{owner.subscription.hotelsAllowed}</Text>
-          </View>
+      </View>
+      
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Personal Information</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Name:</Text>
+          <Text style={styles.value}>{owner.name}</Text>
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Hotel Information</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Hotels Owned:</Text>
-            <Text style={styles.value}>{owner.hotelsOwned}</Text>
-          </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Mobile:</Text>
+          <Text style={styles.value}>{owner.mobile}</Text>
         </View>
-      </ScrollView>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{owner.email}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Address:</Text>
+          <Text style={styles.value}>{owner.address}</Text>
+        </View>
+      </View>
 
-      <TouchableOpacity 
-        style={styles.fab}
-        onPress={() => navigation.navigate('UpdateOwner', { ownerData: owner })}
-      >
-        <FontAwesome name="edit" size={24} color="white" />
-      </TouchableOpacity>
-    </SafeAreaView>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Subscription Details</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Remaining Days:</Text>
+          <Text style={styles.value}>{owner.subscription.remainingDays}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Hotels Allowed:</Text>
+          <Text style={styles.value}>{owner.subscription.hotelsAllowed}</Text>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Hotel Information</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Hotels Owned:</Text>
+          <Text style={styles.value}>{owner.hotelsOwned}</Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -205,5 +214,32 @@ const styles = StyleSheet.create({
   retryText: {
     color: '#007AFF',
     textDecorationLine: 'underline',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerButton: {
+    padding: 10,
+    marginLeft: 10,
+    borderRadius: 5,
+  },
+  editButton: {
+    backgroundColor: '#e8f5e9',
+  },
+  deleteButton: {
+    backgroundColor: '#ffebee',
   },
 }); 
