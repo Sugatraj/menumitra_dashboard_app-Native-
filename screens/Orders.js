@@ -65,6 +65,11 @@ export default function Orders({ route, navigation }) {
           </View>
 
           <View style={styles.detailItem}>
+            <Text style={styles.value}>{item.sectionName}</Text>
+            <Text style={styles.label}>Section Name</Text>
+          </View>
+
+          <View style={styles.detailItem}>
             <Text style={styles.value}>{item.orderNumber}</Text>
             <Text style={styles.label}>Order Number</Text>
           </View>
@@ -78,9 +83,9 @@ export default function Orders({ route, navigation }) {
         {/* Right Column */}
         <View style={styles.column}>
           <View style={styles.detailItem}>
-            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.orderStatus) }]}>
-              <Text style={styles.statusText}>{item.orderStatus}</Text>
-            </View>
+            <Text style={[styles.value, { color: getStatusColor(item.orderStatus) }]}>
+              {item.orderStatus}
+            </Text>
             <Text style={styles.label}>Status</Text>
           </View>
 
@@ -136,11 +141,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
     padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   orderGrid: {
     flexDirection: 'row',
@@ -166,17 +166,5 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 4,
     textTransform: 'uppercase',
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 4,
-  },
-  statusText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
+  }
 }); 
