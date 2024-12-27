@@ -20,6 +20,8 @@ import CreateSection from './screens/CreateSection';
 import SectionDetails from './screens/SectionDetails';
 import TableDetails from './screens/TableDetails';
 import UpdateSection from './screens/UpdateSection';
+import Orders from './screens/Orders';
+import OrderDetails from './screens/OrderDetails';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -328,6 +330,34 @@ function MainStackNavigator() {
         component={UpdateSection}
         options={{
           title: 'Update Section',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="Orders" 
+        component={Orders}
+        options={{
+          title: 'Orders',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="OrderDetails" 
+        component={OrderDetails}
+        options={{
+          title: 'Order Details',
           headerStyle: {
             backgroundColor: '#fff',
           },
