@@ -14,42 +14,55 @@ import { Picker } from '@react-native-picker/picker';
 import { useRestaurants } from '../hooks/useRestaurants';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function UpdateRestaurantScreen({ route, navigation }) {
-  const { restaurant } = route.params || {};
-  const { getRestaurant, updateRestaurant } = useRestaurants();
+  const { restaurantId } = route.params;
+  const { updateRestaurant } = useRestaurants();
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    name: restaurant?.name || '',
-    fssaiNumber: restaurant?.fssaiNumber || '',
-    gstNumber: restaurant?.gstNumber || '',
-    mobile: '',
-    serviceCharges: '',
-    gst: '',
-    vegNonveg: restaurant?.vegNonveg || 'Vegetarian',
-    owner: '',
-    restaurantType: restaurant?.restaurantType || '',
-    upiId: restaurant?.upiId || '',
-    website: '',
-    instagram: '',
-    facebook: '',
-    whatsapp: '',
-    googleReview: '',
-    googleBusinessLink: '',
-    hotelStatus: restaurant?.hotelStatus || false,
-    isOpen: restaurant?.isOpen || false,
-    address: restaurant?.address || '',
-    image: restaurant?.image || null,
-  });
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
-    loadRestaurant();
-  }, [restaurant]);
+    loadRestaurantFromStorage();
+  }, [restaurantId]);
 
-  const loadRestaurant = async () => {
+  const loadRestaurantFromStorage = async () => {
     try {
-      const data = await getRestaurant(restaurant.id);
-      setFormData(data);
+      setLoading(true);
+      // Get restaurants from AsyncStorage
+      const restaurantsJson = await AsyncStorage.getItem('restaurants');
+      const restaurants = restaurantsJson ? JSON.parse(restaurantsJson) : {};
+      
+      // Find the specific restaurant
+      const restaurantData = restaurants[restaurantId];
+      
+      if (!restaurantData) {
+        throw new Error('Restaurant not found');
+      }
+
+      // Set initial form data with all fields properly converted to strings
+      setFormData({
+        name: restaurantData.name || '',
+        fssaiNumber: restaurantData.fssaiNumber?.toString() || '',
+        gstNumber: restaurantData.gstNumber || '',
+        mobile: restaurantData.mobile?.toString() || '',
+        serviceCharges: restaurantData.serviceCharges?.toString() || '0',
+        gst: restaurantData.gst?.toString() || '0',
+        vegNonveg: restaurantData.vegNonveg || 'Vegetarian',
+        owner: restaurantData.owner || '',
+        restaurantType: restaurantData.restaurantType || '',
+        upiId: restaurantData.upiId || '',
+        website: restaurantData.website || '',
+        instagram: restaurantData.instagram || '',
+        facebook: restaurantData.facebook || '',
+        whatsapp: restaurantData.whatsapp || '',
+        googleReview: restaurantData.googleReview || '',
+        googleBusinessLink: restaurantData.googleBusinessLink || '',
+        hotelStatus: restaurantData.hotelStatus || false,
+        isOpen: restaurantData.isOpen || false,
+        address: restaurantData.address || '',
+        image: restaurantData.image || null,
+      });
     } catch (error) {
       console.error('Error loading restaurant:', error);
       alert('Failed to load restaurant details');
@@ -61,7 +74,26 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await updateRestaurant(restaurant.id, formData);
+      
+      // Get current restaurants data
+      const restaurantsJson = await AsyncStorage.getItem('restaurants');
+      const restaurants = restaurantsJson ? JSON.parse(restaurantsJson) : {};
+      
+      // Update the specific restaurant
+      restaurants[restaurantId] = {
+        ...restaurants[restaurantId],
+        ...formData,
+        id: restaurantId
+      };
+      
+      // Save back to AsyncStorage
+      await AsyncStorage.setItem('restaurants', JSON.stringify(restaurants));
+      
+      // If you have an updateRestaurant function in useRestaurants, call it
+      if (updateRestaurant) {
+        await updateRestaurant(restaurantId, formData);
+      }
+      
       alert('Restaurant updated successfully!');
       navigation.goBack();
     } catch (error) {

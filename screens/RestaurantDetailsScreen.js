@@ -114,6 +114,54 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
+        {/* Action Buttons Section */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.actionButtonsContainer}
+        >
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('BulkUpload', { restaurantId: restaurant.id })}
+          >
+            <FontAwesome name="upload" size={20} color="#fff" />
+            <Text style={styles.actionButtonText}>Upload Bulk File</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('ManageCategory', { restaurantId: restaurant.id })}
+          >
+            <FontAwesome name="list" size={20} color="#fff" />
+            <Text style={styles.actionButtonText}>Manage Category</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('ManageMenus', { restaurantId: restaurant.id })}
+          >
+            <FontAwesome name="cutlery" size={20} color="#fff" />
+            <Text style={styles.actionButtonText}>Manage Menus</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('ManageSections', { restaurantId: restaurant.id })}
+          >
+            <FontAwesome name="th-large" size={20} color="#fff" />
+            <Text style={styles.actionButtonText}>Manage Sections</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Orders', { restaurantId: restaurant.id })}
+          >
+            <FontAwesome name="shopping-cart" size={20} color="#fff" />
+            <Text style={styles.actionButtonText}>Orders</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Restaurant Image */}
         {restaurant.image && (
           <Image
             source={{ uri: restaurant.image }}
@@ -241,7 +289,7 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
       <TouchableOpacity 
         style={styles.fab}
         onPress={() => navigation.navigate('UpdateRestaurant', { 
-          restaurant: restaurant
+          restaurantId: restaurant.id
         })}
       >
         <FontAwesome name="edit" size={24} color="white" />
@@ -374,5 +422,35 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  actionButtonsContainer: {
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  actionButton: {
+    backgroundColor: '#67B279',
+    borderRadius: 8,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    width: '48%',
+    height: 45,
+    marginBottom: 10,
+  },
+  actionButtonText: {
+    color: '#fff',
+    marginLeft: 6,
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 }); 

@@ -12,6 +12,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useRestaurants } from '../hooks/useRestaurants';
 import { useFocusEffect } from '@react-navigation/native';
 import { useOwners } from '../hooks/useOwners';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ManageRestaurants({ navigation }) {
   const { 
@@ -38,10 +39,15 @@ export default function ManageRestaurants({ navigation }) {
 
   const loadRestaurantsWithOwners = async () => {
     try {
+      // First get all owners from local storage
+      const ownersJson = await AsyncStorage.getItem('owners');
+      const allOwners = ownersJson ? JSON.parse(ownersJson) : {};
+
       const updatedRestaurants = await Promise.all(
         restaurants.map(async (restaurant) => {
           if (restaurant.owner) {
-            const ownerData = await getOwner(restaurant.owner);
+            // Get owner directly from the parsed owners object
+            const ownerData = allOwners[restaurant.owner];
             return {
               ...restaurant,
               ownerName: ownerData?.name || 'Not Assigned'
@@ -53,9 +59,16 @@ export default function ManageRestaurants({ navigation }) {
           };
         })
       );
+      
+      console.log('Updated restaurants with owners:', updatedRestaurants);
       setRestaurantsWithOwners(updatedRestaurants);
     } catch (error) {
       console.error('Error loading owners:', error);
+      // Set restaurants without owner information rather than failing completely
+      setRestaurantsWithOwners(restaurants.map(restaurant => ({
+        ...restaurant,
+        ownerName: 'Not Assigned'
+      })));
     }
   };
 

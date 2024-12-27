@@ -6,6 +6,11 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
+import BulkUploadScreen from './screens/BulkUploadScreen';
+import ManageCategory from './screens/ManageCategory'; // Added import
+import CreateCategory from './screens/CreateCategory';
+import CategoryDetailsScreen from './screens/CategoryDetailsScreen';
+import UpdateCategory from './screens/UpdateCategory';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -42,6 +47,17 @@ function CustomDrawerContent(props) {
               params: {
                 screen: "ManageOwner",
               },
+            });
+          }}
+        />
+        <DrawerItem
+          label="Manage Categories"
+          icon={({ color, size }) => (
+            <FontAwesome name="list" size={size} color={color} />
+          )}
+          onPress={() => {
+            props.navigation.navigate("MainStack", {
+              screen: "ManageCategory",
             });
           }}
         />
@@ -122,6 +138,70 @@ function MainStackNavigator() {
           headerTitle: getHeaderTitle(route),
         })}
       />
+      <Stack.Screen 
+        name="BulkUpload" 
+        component={BulkUploadScreen}
+        options={{
+          title: 'Upload Bulk File',
+          headerStyle: {
+            backgroundColor: '#67B279',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="ManageCategory" 
+        component={ManageCategory}
+        options={{
+          title: 'Manage Categories',
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen 
+        name="CreateCategory" 
+        component={CreateCategory}
+        options={{
+          title: 'Create Category',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="CategoryDetails" 
+        component={CategoryDetailsScreen}
+        options={{
+          title: 'Category Details',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="UpdateCategory" 
+        component={UpdateCategory}
+        options={{
+          title: 'Update Category',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -141,6 +221,8 @@ const getHeaderTitle = (route) => {
       return 'Add Owner';
     case 'UpdateOwner':
       return 'Update Owner';
+    case 'ManageCategory':
+      return 'Manage Categories'; // Added case
     default:
       return 'Dashboard';
   }
