@@ -114,12 +114,8 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {/* Action Buttons Section */}
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.actionButtonsContainer}
-        >
+        {/* Action Buttons Section First */}
+        <View style={styles.actionButtonsContainer}>
           <TouchableOpacity 
             style={styles.actionButton}
             onPress={() => navigation.navigate('BulkUpload', { restaurantId: restaurant.id })}
@@ -159,15 +155,19 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
             <FontAwesome name="shopping-cart" size={20} color="#fff" />
             <Text style={styles.actionButtonText}>Orders</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
 
-        {/* Restaurant Image */}
-        {restaurant.image && (
+        {/* Restaurant Image After Buttons */}
+        {restaurant.image ? (
           <Image
             source={{ uri: restaurant.image }}
-            style={styles.image}
+            style={styles.restaurantImage}
             resizeMode="cover"
           />
+        ) : (
+          <View style={styles.placeholderImage}>
+            <FontAwesome name="image" size={50} color="#ccc" />
+          </View>
         )}
 
         <View style={styles.header}>
@@ -452,5 +452,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  restaurantImage: {
+    width: '50%',
+    alignSelf: 'center',
+    aspectRatio: 1,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  placeholderImage: {
+    width: '50%',
+    alignSelf: 'center',
+    aspectRatio: 1,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
 }); 
