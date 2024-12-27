@@ -11,7 +11,6 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { useRestaurants } from '../hooks/useRestaurants';
 import { useFocusEffect } from '@react-navigation/native';
-import { useOwners } from '../hooks/useOwners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ManageRestaurants({ navigation }) {
@@ -22,9 +21,37 @@ export default function ManageRestaurants({ navigation }) {
     refreshRestaurants,
     deleteRestaurant 
   } = useRestaurants();
-  const { owners } = useOwners();
   const [restaurantsWithOwners, setRestaurantsWithOwners] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [owners, setOwners] = useState([]);
+
+  // Load owners from AsyncStorage
+  useEffect(() => {
+    const loadOwners = async () => {
+      try {
+        const ownersData = await AsyncStorage.getItem('owners');
+        const parsedOwners = ownersData ? JSON.parse(ownersData) : [];
+        setOwners(parsedOwners);
+      } catch (error) {
+        console.error('Error loading owners:', error);
+      }
+    };
+    loadOwners();
+  }, []);
+
+  // Map restaurants with owner names
+  useEffect(() => {
+    if (restaurants && owners.length > 0) {
+      const updatedRestaurants = restaurants.map(restaurant => {
+        const owner = owners.find(o => o.id === restaurant.ownerId);
+        return {
+          ...restaurant,
+          ownerName: owner ? `${owner.name} (${owner.mobile})` : 'Not Assigned'
+        };
+      });
+      setRestaurantsWithOwners(updatedRestaurants);
+    }
+  }, [restaurants, owners]);
 
   // Refresh restaurants when screen comes into focus
   useFocusEffect(
@@ -32,19 +59,6 @@ export default function ManageRestaurants({ navigation }) {
       refreshRestaurants();
     }, [])
   );
-
-  useEffect(() => {
-    if (restaurants && owners) {
-      const updatedRestaurants = restaurants.map(restaurant => {
-        const owner = owners.find(o => o.id === restaurant.owner);
-        return {
-          ...restaurant,
-          ownerName: owner ? owner.name : 'Not Assigned'
-        };
-      });
-      setRestaurantsWithOwners(updatedRestaurants);
-    }
-  }, [restaurants, owners]);
 
   const handleDelete = async (id) => {
     try {

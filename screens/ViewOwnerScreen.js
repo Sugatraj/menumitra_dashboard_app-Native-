@@ -115,61 +115,107 @@ export default function ViewOwnerScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{owner.name}</Text>
-          <TouchableOpacity
-            style={[styles.headerButton, styles.deleteButton]}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <View style={styles.card}>
+          {/* Personal Information */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Personal Information</Text>
+            <View style={styles.grid}>
+              {/* Left Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.name || '-'}</Text>
+                  <Text style={styles.label}>Name</Text>
+                </View>
+
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.mobile || '-'}</Text>
+                  <Text style={styles.label}>Mobile</Text>
+                </View>
+              </View>
+
+              {/* Right Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.email || '-'}</Text>
+                  <Text style={styles.label}>Email</Text>
+                </View>
+
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.address || '-'}</Text>
+                  <Text style={styles.label}>Address</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Subscription Details */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Subscription Details</Text>
+            <View style={styles.grid}>
+              {/* Left Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.subscription?.remainingDays || '-'}</Text>
+                  <Text style={styles.label}>Remaining Days</Text>
+                </View>
+              </View>
+
+              {/* Right Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.subscription?.hotelsAllowed || '-'}</Text>
+                  <Text style={styles.label}>Hotels Allowed</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Hotel Information */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Hotel Information</Text>
+            <View style={styles.grid}>
+              {/* Left Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.hotelsOwned || '0'}</Text>
+                  <Text style={styles.label}>Hotels Owned</Text>
+                </View>
+              </View>
+
+              {/* Right Column */}
+              <View style={styles.column}>
+                <View style={styles.detailItem}>
+                  <Text style={styles.value}>{owner?.status || 'Active'}</Text>
+                  <Text style={styles.label}>Status</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Delete Button - Updated to match RestaurantDetailsScreen */}
+        <View style={styles.bottomSection}>
+          <TouchableOpacity 
+            style={styles.deleteButton}
             onPress={handleDelete}
           >
-            <FontAwesome name="trash" size={20} color="#dc3545" />
+            <FontAwesome name="trash" size={20} color="#fff" />
+            <Text style={styles.deleteButtonText}>Delete Owner</Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Name:</Text>
-            <Text style={styles.value}>{owner.name}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Mobile:</Text>
-            <Text style={styles.value}>{owner.mobile}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{owner.email}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Address:</Text>
-            <Text style={styles.value}>{owner.address}</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Subscription Details</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Remaining Days:</Text>
-            <Text style={styles.value}>{owner.subscription.remainingDays}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Hotels Allowed:</Text>
-            <Text style={styles.value}>{owner.subscription.hotelsAllowed}</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Hotel Information</Text>
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Hotels Owned:</Text>
-            <Text style={styles.value}>{owner.hotelsOwned}</Text>
-          </View>
         </View>
       </ScrollView>
 
+      {/* FAB for Edit */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('UpdateOwner', { ownerData: owner })}
+        onPress={() => navigation.navigate('UpdateOwner', { 
+          ownerId: owner?.id,
+          ownerData: owner
+        })}
       >
         <FontAwesome name="edit" size={24} color="white" />
       </TouchableOpacity>
@@ -180,29 +226,47 @@ export default function ViewOwnerScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F3F4F6',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
   },
   section: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#111827',
     marginBottom: 16,
   },
-  infoRow: {
+  grid: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginHorizontal: -8,
   },
-  label: {
+  column: {
     flex: 1,
-    fontWeight: '500',
-    color: '#666',
+    paddingHorizontal: 8,
+  },
+  detailItem: {
+    marginBottom: 16,
   },
   value: {
-    flex: 2,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  label: {
+    fontSize: 13,
+    color: '#6B7280',
+    textTransform: 'uppercase',
   },
   fab: {
     position: 'absolute',
@@ -219,9 +283,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    zIndex: 1,
   },
   deleteButton: {
-    marginRight: 16,
+    backgroundColor: '#DC2626',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    alignSelf: 'flex-start',
+    width: 'auto',
+    paddingHorizontal: 20,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   errorContainer: {
     flex: 1,
@@ -261,10 +341,21 @@ const styles = StyleSheet.create({
   editButton: {
     backgroundColor: '#e8f5e9',
   },
-  deleteButton: {
-    backgroundColor: '#ffebee',
+  deleteSection: {
+    marginTop: 24,
+    paddingTop: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    alignItems: 'flex-start',
   },
-  scrollView: {
-    flex: 1,
+  scrollViewContent: {
+    padding: 16,
+    paddingBottom: 80,
+  },
+  bottomSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+    alignItems: 'flex-start',
   },
 }); 

@@ -27,10 +27,27 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
   const [restaurant, setRestaurant] = useState(null);
   const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
+  const [loadingOwners, setLoadingOwners] = useState(true);
 
   useEffect(() => {
     loadRestaurantData();
   }, [restaurantId]);
+
+  useEffect(() => {
+    const loadOwners = async () => {
+      try {
+        setLoadingOwners(true);
+        const ownersData = await AsyncStorage.getItem('owners');
+        const parsedOwners = ownersData ? JSON.parse(ownersData) : [];
+        setOwners(parsedOwners);
+      } catch (error) {
+        console.error('Error loading owners:', error);
+      } finally {
+        setLoadingOwners(false);
+      }
+    };
+    loadOwners();
+  }, []);
 
   const loadRestaurantData = async () => {
     try {
@@ -63,6 +80,8 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
           googleBusinessLink: restaurantData.googleBusinessLink || '',
           hotelStatus: restaurantData.hotelStatus || 'Active',
           isOpen: restaurantData.isOpen || 'Open',
+          ownerId: restaurantData.ownerId || '',
+          ownerName: restaurantData.ownerName || '',
         });
       } else {
         setError('Restaurant not found');
@@ -232,13 +251,42 @@ export default function UpdateRestaurantScreen({ route, navigation }) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>* Owner</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.owner}
-              onChangeText={(text) => setFormData({ ...formData, owner: text })}
-              placeholder="Enter Owner Name"
-            />
+            <Text style={styles.label}>Owner *</Text>
+            {loadingOwners ? (
+              <ActivityIndicator size="small" color="#67B279" />
+            ) : (
+              <View style={styles.pickerContainer}>
+                <Picker
+                  style={styles.picker}
+                  selectedValue={formData.ownerId}
+                  onValueChange={(value) => {
+                    if (value) {
+                      const selectedOwner = owners.find(owner => owner.id === value);
+                      setFormData({
+                        ...formData,
+                        ownerId: value,
+                        ownerName: selectedOwner?.name || ''
+                      });
+                    }
+                  }}
+                >
+                  <Picker.Item label="Select Owner" value="" />
+                  {owners.map((owner) => (
+                    <Picker.Item
+                      key={owner.id}
+                      label={`${owner.name} (${owner.mobile})`}
+                      value={owner.id}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            )}
+            <TouchableOpacity 
+              style={styles.addOwnerButton}
+              onPress={() => navigation.navigate('CreateOwner')}
+            >
+              <Text style={styles.addOwnerButtonText}>+ Add New Owner</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.inputGroup}>
@@ -412,13 +460,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   inputGroup: {
-    marginBottom: 15,
-    paddingHorizontal: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#666',
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 4,
+    textTransform: 'uppercase',
   },
   input: {
     borderWidth: 1,
@@ -506,9 +554,9 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    marginBottom: 15,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    marginTop: 5,
     backgroundColor: '#fff',
   },
   picker: {
@@ -549,5 +597,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     width: '100%',
+  },
+  addOwnerButton: {
+    marginTop: 8,
+    padding: 8,
+  },
+  addOwnerButtonText: {
+    color: '#67B279',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

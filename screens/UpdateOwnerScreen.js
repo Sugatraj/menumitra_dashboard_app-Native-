@@ -2,278 +2,176 @@ import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
+  ScrollView,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
+  Text,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { ownerService } from '../services/ownerService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function UpdateOwnerScreen({ route, navigation }) {
-  const { ownerData } = route.params;
-  const [formData, setFormData] = useState({
-    name: ownerData.name || '',
-    mobile: ownerData.mobile || '',
-    email: ownerData.email || '',
-    dob: ownerData.dob || '',
-    aadhar: ownerData.aadhar || '',
-    address: ownerData.address || '',
-  });
+  const { ownerId, ownerData } = route.params;
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setFormData({
-        ...formData,
-        dob: selectedDate.toISOString().split('T')[0],
-      });
-    }
-  };
-
-  const validateForm = () => {
-    if (!formData.name.trim()) return 'Name is required';
-    if (!formData.mobile.trim()) return 'Mobile number is required';
-    if (!formData.email.trim()) return 'Email is required';
-    if (!formData.dob) return 'Date of Birth is required';
-    if (!formData.aadhar.trim()) return 'Aadhar number is required';
-    if (!formData.address.trim()) return 'Address is required';
-    return null;
-  };
+  const [formData, setFormData] = useState({
+    name: ownerData?.name || '',
+    email: ownerData?.email || '',
+    mobile: ownerData?.mobile || '',
+    address: ownerData?.address || '',
+    subscription: {
+      remainingDays: ownerData?.subscription?.remainingDays || 0,
+      hotelsAllowed: ownerData?.subscription?.hotelsAllowed || 0,
+    },
+    hotelsOwned: ownerData?.hotelsOwned || 0,
+    status: ownerData?.status || 'Active',
+  });
 
   const handleUpdate = async () => {
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
     try {
       setLoading(true);
-      setError(null);
-      await ownerService.updateOwner(ownerData.id, formData);
-      Alert.alert(
-        'Success',
-        'Owner details updated successfully',
-        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      
+      // Get current owners
+      const ownersData = await AsyncStorage.getItem('owners');
+      const owners = ownersData ? JSON.parse(ownersData) : [];
+      
+      // Find and update the owner
+      const updatedOwners = owners.map(owner => 
+        owner.id === ownerId ? { ...owner, ...formData } : owner
       );
-    } catch (err) {
-      setError(err.message || 'Failed to update owner details');
+      
+      // Save back to storage
+      await AsyncStorage.setItem('owners', JSON.stringify(updatedOwners));
+      
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating owner:', error);
+      Alert.alert('Error', 'Failed to update owner');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
- 
+    <ScrollView style={styles.container}>
+      <View style={styles.form}>
+        {/* Personal Information */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
+          
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.name}
+              onChangeText={(text) => setFormData({ ...formData, name: text })}
+              placeholder="Enter Name"
+            />
+          </View>
 
-      <ScrollView style={styles.formContainer}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Name <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Name"
-            value={formData.name}
-            onChangeText={(text) => setFormData({...formData, name: text})}
-          />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.email}
+              onChangeText={(text) => setFormData({ ...formData, email: text })}
+              placeholder="Enter Email"
+              keyboardType="email-address"
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Mobile</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.mobile}
+              onChangeText={(text) => setFormData({ ...formData, mobile: text })}
+              placeholder="Enter Mobile"
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Address</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={formData.address}
+              onChangeText={(text) => setFormData({ ...formData, address: text })}
+              placeholder="Enter Address"
+              multiline
+              numberOfLines={3}
+            />
+          </View>
         </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Mobile <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Mobile"
-            keyboardType="phone-pad"
-            value={formData.mobile}
-            onChangeText={(text) => setFormData({...formData, mobile: text})}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Email <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={formData.email}
-            onChangeText={(text) => setFormData({...formData, email: text})}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Date Of Birth <Text style={styles.required}>*</Text>
-          </Text>
-          <TouchableOpacity
-            style={styles.dateInput}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text style={formData.dob ? styles.dateText : styles.placeholderText}>
-              {formData.dob || 'dd-mm-yyyy'}
-            </Text>
-            <FontAwesome name="calendar" size={20} color="#666" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Aadhar Number <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Aadhar Number"
-            keyboardType="numeric"
-            value={formData.aadhar}
-            onChangeText={(text) => setFormData({...formData, aadhar: text})}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            Address <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Enter Address"
-            multiline
-            numberOfLines={4}
-            value={formData.address}
-            onChangeText={(text) => setFormData({...formData, address: text})}
-          />
-        </View>
-
-        {error && (
-          <Text style={styles.errorText}>{error}</Text>
-        )}
 
         <TouchableOpacity 
-          style={[styles.updateButton, loading && styles.updateButtonDisabled]}
+          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
           onPress={handleUpdate}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="white" size="small" />
           ) : (
-            <Text style={styles.updateButtonText}>Update</Text>
+            <Text style={styles.submitButtonText}>Update Owner</Text>
           )}
         </TouchableOpacity>
-      </ScrollView>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={formData.dob ? new Date(formData.dob) : new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: '#F3F4F6',
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  form: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backText: {
-    marginLeft: 8,
-    color: "#666",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  formContainer: {
+  section: {
+    marginBottom: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     padding: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
   },
   inputGroup: {
     marginBottom: 16,
   },
   label: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: "#333",
-  },
-  required: {
-    color: "red",
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 4,
+    textTransform: 'uppercase',
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 4,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: "white",
+    color: '#1F2937',
   },
   textArea: {
     height: 100,
-    textAlignVertical: "top",
+    textAlignVertical: 'top',
   },
-  dateInput: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 4,
-    padding: 12,
-    backgroundColor: "white",
-  },
-  dateText: {
-    fontSize: 16,
-    color: "#000",
-  },
-  placeholderText: {
-    fontSize: 16,
-    color: "#999",
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  updateButton: {
-    backgroundColor: "#007AFF",
+  submitButton: {
+    backgroundColor: '#67B279',
     padding: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 24,
-    marginBottom: 40,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  updateButtonDisabled: {
+  submitButtonDisabled: {
     opacity: 0.7,
   },
-  updateButtonText: {
-    color: "white",
+  submitButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 }); 

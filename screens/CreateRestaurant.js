@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,11 +15,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { useOwners } from '../hooks/useOwners';
 import { useRestaurants } from '../hooks/useRestaurants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreateRestaurant({ navigation }) {
-  const { owners, loading: ownersLoading } = useOwners();
   const { createRestaurant } = useRestaurants();
   const [loading, setLoading] = useState(false);
+  const [owners, setOwners] = useState([]);
+  const [loadingOwners, setLoadingOwners] = useState(true);
   const [formData, setFormData] = useState({
     restaurantCode: '',
     name: '',
@@ -49,8 +51,28 @@ export default function CreateRestaurant({ navigation }) {
     createdOn: new Date().toLocaleDateString(),
     createdBy: 'admin',
     updatedOn: new Date().toLocaleDateString(),
-    updatedBy: 'admin'
+    updatedBy: 'admin',
+    ownerId: '',
+    ownerName: ''
   });
+
+  // Load owners from AsyncStorage
+  useEffect(() => {
+    const loadOwners = async () => {
+      try {
+        setLoadingOwners(true);
+        const ownersData = await AsyncStorage.getItem('owners');
+        const parsedOwners = ownersData ? JSON.parse(ownersData) : [];
+        setOwners(parsedOwners);
+      } catch (error) {
+        console.error('Error loading owners:', error);
+      } finally {
+        setLoadingOwners(false);
+      }
+    };
+
+    loadOwners();
+  }, []);
 
   const handleImagePick = async () => {
     try {
@@ -79,13 +101,18 @@ export default function CreateRestaurant({ navigation }) {
 
   const handleSubmit = async () => {
     try {
-      if (!formData.owner) {
+      if (!formData.ownerId) {
         alert('Please select an owner');
         return;
       }
 
+      const restaurantData = {
+        ...formData,
+        owner: formData.ownerId,
+      };
+
       setLoading(true);
-      await createRestaurant(formData);
+      await createRestaurant(restaurantData);
       alert('Restaurant created successfully!');
       navigation.goBack();
     } catch (error) {
@@ -96,7 +123,7 @@ export default function CreateRestaurant({ navigation }) {
     }
   };
 
-  if (ownersLoading) {
+  if (loadingOwners) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -191,13 +218,42 @@ export default function CreateRestaurant({ navigation }) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Owner Name *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Owner Name"
-              value={formData.ownerName}
-              onChangeText={(text) => setFormData({ ...formData, ownerName: text })}
-            />
+            <Text style={styles.label}>Owner *</Text>
+            {loadingOwners ? (
+              <ActivityIndicator size="small" color="#67B279" />
+            ) : (
+              <View style={styles.pickerContainer}>
+                <Picker
+                  style={styles.picker}
+                  selectedValue={formData.ownerId}
+                  onValueChange={(value, index) => {
+                    if (value) {
+                      const selectedOwner = owners.find(owner => owner.id === value);
+                      setFormData({
+                        ...formData,
+                        ownerId: value,
+                        ownerName: selectedOwner?.name || ''
+                      });
+                    }
+                  }}
+                >
+                  <Picker.Item label="Select Owner" value="" />
+                  {owners.map((owner) => (
+                    <Picker.Item
+                      key={owner.id}
+                      label={`${owner.name} (${owner.mobile})`}
+                      value={owner.id}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            )}
+            <TouchableOpacity 
+              style={styles.addOwnerButton}
+              onPress={() => navigation.navigate('CreateOwner')}
+            >
+              <Text style={styles.addOwnerButtonText}>+ Add New Owner</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.inputGroup}>
@@ -429,13 +485,23 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 5,
+    borderRadius: 8,
     marginTop: 5,
+    backgroundColor: '#fff',
   },
   picker: {
     height: 50,
   },
   submitButtonDisabled: {
     opacity: 0.7,
+  },
+  addOwnerButton: {
+    marginTop: 8,
+    padding: 8,
+  },
+  addOwnerButtonText: {
+    color: '#67B279',
+    fontSize: 14,
+    fontWeight: '500',
   },
 }); 

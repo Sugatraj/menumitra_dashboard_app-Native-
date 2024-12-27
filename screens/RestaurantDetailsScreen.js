@@ -387,14 +387,26 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
             </View>
           </View>
         </View>
+
+        {/* Add padding at bottom for better spacing */}
+        <View style={styles.bottomSection}>
+          {/* Delete button inside ScrollView */}
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={handleDelete}
+          >
+            <FontAwesome name="trash" size={20} color="#fff" />
+            <Text style={styles.deleteButtonText}>Delete Restaurant</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
-      {/* FAB */}
+      {/* FAB for Edit - stays floating */}
       <TouchableOpacity 
         style={styles.fab}
         onPress={() => navigation.navigate('UpdateRestaurant', { 
           restaurantId: restaurantId,
-          restaurant: restaurant // Pass the current restaurant data
+          restaurant: restaurant
         })}
       >
         <FontAwesome name="edit" size={24} color="white" />
@@ -482,8 +494,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
+    right: 16,
+    bottom: 16,
     backgroundColor: '#67B279',
     width: 56,
     height: 56,
@@ -491,5 +503,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 1,
+  },
+  deleteButton: {
+    backgroundColor: '#DC2626',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    alignSelf: 'flex-start',
+    width: 'auto',
+    paddingHorizontal: 20,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  bottomSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+    alignItems: 'flex-start',
   },
 }); 
