@@ -11,6 +11,15 @@ import ManageCategory from './screens/ManageCategory'; // Added import
 import CreateCategory from './screens/CreateCategory';
 import CategoryDetailsScreen from './screens/CategoryDetailsScreen';
 import UpdateCategory from './screens/UpdateCategory';
+import ManageMenus from './screens/ManageMenus';
+import CreateMenu from './screens/CreateMenu';
+import MenuDetails from './screens/MenuDetails';
+import UpdateMenu from './screens/UpdateMenu';
+import ManageSections from './screens/ManageSections';
+import CreateSection from './screens/CreateSection';
+import SectionDetails from './screens/SectionDetails';
+import TableDetails from './screens/TableDetails';
+import UpdateSection from './screens/UpdateSection';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -193,6 +202,132 @@ function MainStackNavigator() {
         component={UpdateCategory}
         options={{
           title: 'Update Category',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="ManageMenus" 
+        component={ManageMenus}
+        options={{
+          title: 'Manage Menus',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="CreateMenu" 
+        component={CreateMenu}
+        options={{
+          title: 'Create Menu',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="MenuDetails" 
+        component={MenuDetails}
+        options={{
+          title: 'Menu Details',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="UpdateMenu" 
+        component={UpdateMenu}
+        options={{
+          title: 'Update Menu',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="ManageSections" 
+        component={ManageSections}
+        options={{
+          title: 'Manage Sections',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="CreateSection" 
+        component={CreateSection}
+        options={{
+          title: 'Create Section',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="SectionDetails" 
+        component={SectionDetails}
+        options={{
+          title: 'Section Details',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="TableDetails" 
+        component={TableDetails}
+        options={{
+          title: 'Table Details',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerTintColor: '#333',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="UpdateSection" 
+        component={UpdateSection}
+        options={{
+          title: 'Update Section',
           headerStyle: {
             backgroundColor: '#fff',
           },
