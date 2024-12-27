@@ -22,7 +22,7 @@ export default function ManageRestaurants({ navigation }) {
     refreshRestaurants,
     deleteRestaurant 
   } = useRestaurants();
-  const { getOwner } = useOwners();
+  const { owners } = useOwners();
   const [restaurantsWithOwners, setRestaurantsWithOwners] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -34,43 +34,17 @@ export default function ManageRestaurants({ navigation }) {
   );
 
   useEffect(() => {
-    loadRestaurantsWithOwners();
-  }, [restaurants]);
-
-  const loadRestaurantsWithOwners = async () => {
-    try {
-      // First get all owners from local storage
-      const ownersJson = await AsyncStorage.getItem('owners');
-      const allOwners = ownersJson ? JSON.parse(ownersJson) : {};
-
-      const updatedRestaurants = await Promise.all(
-        restaurants.map(async (restaurant) => {
-          if (restaurant.owner) {
-            // Get owner directly from the parsed owners object
-            const ownerData = allOwners[restaurant.owner];
-            return {
-              ...restaurant,
-              ownerName: ownerData?.name || 'Not Assigned'
-            };
-          }
-          return {
-            ...restaurant,
-            ownerName: 'Not Assigned'
-          };
-        })
-      );
-      
-      console.log('Updated restaurants with owners:', updatedRestaurants);
+    if (restaurants && owners) {
+      const updatedRestaurants = restaurants.map(restaurant => {
+        const owner = owners.find(o => o.id === restaurant.owner);
+        return {
+          ...restaurant,
+          ownerName: owner ? owner.name : 'Not Assigned'
+        };
+      });
       setRestaurantsWithOwners(updatedRestaurants);
-    } catch (error) {
-      console.error('Error loading owners:', error);
-      // Set restaurants without owner information rather than failing completely
-      setRestaurantsWithOwners(restaurants.map(restaurant => ({
-        ...restaurant,
-        ownerName: 'Not Assigned'
-      })));
     }
-  };
+  }, [restaurants, owners]);
 
   const handleDelete = async (id) => {
     try {
@@ -96,11 +70,9 @@ export default function ManageRestaurants({ navigation }) {
         {/* First Row */}
         <View style={styles.row}>
           <View style={styles.leftColumn}>
-            
             <Text style={[styles.value, styles.boldText]}>{item.name}</Text>
           </View>
           <View style={styles.rightColumn}>
-         
             <Text style={[
               styles.statusText,
               { color: item.isOpen ? '#28a745' : '#dc3545' }
@@ -113,16 +85,14 @@ export default function ManageRestaurants({ navigation }) {
         {/* Second Row */}
         <View style={styles.row}>
           <View style={styles.leftColumn}>
-            
             <Text style={styles.value}>{item.id}</Text>
           </View>
           <View style={styles.rightColumn}>
-           
             <Text style={styles.value}>{item.mobile}</Text>
           </View>
         </View>
 
-        {/* Third Row */}
+        {/* Third Row - Owner */}
         <View style={styles.row}>
           <View style={styles.leftColumn}>
             <View style={styles.ownerRow}>

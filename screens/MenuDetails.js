@@ -94,117 +94,105 @@ export default function MenuDetails({ route, navigation }) {
     );
   }
 
-  const renderDetailItem = (label, value) => (
-    <View style={styles.detailItem}>
-      <Text style={styles.detailValue}>{value}</Text>
-      <Text style={styles.detailLabel}>{label}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <ScrollView>
         {/* Images Section */}
-        <ScrollView 
-          horizontal 
-          pagingEnabled 
-          style={styles.imageContainer}
-        >
+        <View style={styles.imageContainer}>
           {menu.images && menu.images.length > 0 ? (
-            menu.images.map((uri, index) => (
-              <Image 
-                key={index}
-                source={{ uri }} 
-                style={styles.image}
-                resizeMode="cover"
-              />
-            ))
+            <Image 
+              source={{ uri: menu.images[0] }} 
+              style={styles.image}
+              resizeMode="cover"
+            />
           ) : (
-            <View style={styles.noImageContainer}>
+            <View style={styles.placeholderContainer}>
               <FontAwesome name="image" size={50} color="#666" />
-              <Text style={styles.noImageText}>No images available</Text>
+              <Text style={styles.placeholderText}>No image available</Text>
             </View>
           )}
-        </ScrollView>
+        </View>
 
-        {/* Details Grid - 2 columns */}
-        <View style={styles.detailsGrid}>
+        {/* Details Section - 2 Columns */}
+        <View style={styles.detailsContainer}>
+          {/* Row 1 */}
           <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('NAME', menu.name)}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.name}</Text>
+                <Text style={styles.label}>Name</Text>
+              </View>
             </View>
-            <View style={styles.col}>
-              {renderDetailItem('FULL PRICE', `₹${menu.fullPrice}`)}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{categoryName}</Text>
+                <Text style={styles.label}>Category</Text>
+              </View>
             </View>
           </View>
 
+          {/* Row 2 */}
           <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('HALF PRICE', menu.halfPrice ? `₹${menu.halfPrice}` : 'N/A')}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{menu.fullPrice}</Text>
+                <Text style={styles.label}>Full Price</Text>
+              </View>
             </View>
-            <View style={styles.col}>
-              {renderDetailItem('FOOD TYPE', menu.foodType)}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.halfPrice ? `₹${menu.halfPrice}` : 'N/A'}</Text>
+                <Text style={styles.label}>Half Price</Text>
+              </View>
             </View>
           </View>
 
+          {/* Row 3 */}
           <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('SPICY INDEX', menu.spicyIndex)}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.foodType}</Text>
+                <Text style={styles.label}>Food Type</Text>
+              </View>
             </View>
-            <View style={styles.col}>
-              {renderDetailItem('CATEGORY', categoryName)}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.spicyIndex}</Text>
+                <Text style={styles.label}>Spicy Index</Text>
+              </View>
             </View>
           </View>
 
+          {/* Row 4 */}
           <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('OFFER', menu.offer || 'No offer')}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.rating || 'Not rated'}</Text>
+                <Text style={styles.label}>Rating</Text>
+              </View>
             </View>
-            <View style={styles.col}>
-              {renderDetailItem('RATING', menu.rating || 'Not rated')}
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{menu.isSpecial ? 'Yes' : 'No'}</Text>
+                <Text style={styles.label}>Special</Text>
+              </View>
             </View>
           </View>
 
-          <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('IS SPECIAL', menu.isSpecial ? 'Yes' : 'No')}
-            </View>
-            <View style={styles.col}>
-              {renderDetailItem('CREATED ON', new Date(menu.createdAt).toLocaleDateString())}
-            </View>
+          {/* Full Width Items */}
+          <View style={styles.fullWidthItem}>
+            <Text style={styles.label}>Description</Text>
+            <Text style={styles.value}>{menu.description || 'No description'}</Text>
           </View>
 
-          {/* Full width items */}
-          <View style={styles.row}>
-            <View style={styles.fullWidth}>
-              {renderDetailItem('DESCRIPTION', menu.description || 'No description')}
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.fullWidth}>
-              {renderDetailItem('INGREDIENTS', menu.ingredients || 'No ingredients listed')}
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('CREATED BY', menu.createdBy || 'System')}
-            </View>
-            <View style={styles.col}>
-              {renderDetailItem('UPDATED ON', menu.updatedAt ? new Date(menu.updatedAt).toLocaleDateString() : 'Never')}
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.col}>
-              {renderDetailItem('UPDATED BY', menu.updatedBy || 'N/A')}
-            </View>
+          <View style={styles.fullWidthItem}>
+            <Text style={styles.label}>Ingredients</Text>
+            <Text style={styles.value}>{menu.ingredients || 'No ingredients listed'}</Text>
           </View>
         </View>
       </ScrollView>
 
-      {/* Delete Button - Top Right */}
+      {/* Delete Button */}
       <TouchableOpacity 
         style={styles.deleteButton}
         onPress={handleDelete}
@@ -212,13 +200,10 @@ export default function MenuDetails({ route, navigation }) {
         <FontAwesome name="trash" size={24} color="#dc3545" />
       </TouchableOpacity>
 
-      {/* Update FAB - Bottom Right */}
+      {/* Update FAB */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('UpdateMenu', { 
-          menuId,
-          restaurantId 
-        })}
+        onPress={() => navigation.navigate('UpdateMenu', { menuId, restaurantId })}
       >
         <FontAwesome name="edit" size={24} color="white" />
       </TouchableOpacity>
@@ -237,59 +222,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
+    width: '100%',
     height: 250,
     backgroundColor: '#f0f0f0',
   },
   image: {
-    width: 400,
-    height: 250,
+    width: '100%',
+    height: '100%',
   },
-  noImageContainer: {
-    width: 400,
-    height: 250,
+  placeholderContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
-  noImageText: {
+  placeholderText: {
     marginTop: 10,
     color: '#666',
     fontSize: 16,
   },
-  detailsGrid: {
-    padding: 16,
+  detailsContainer: {
+    padding: 20,
   },
   row: {
     flexDirection: 'row',
-    marginHorizontal: -8,
-    marginBottom: 16,
+    justifyContent: 'space-between',
+    marginHorizontal: -10,
   },
-  col: {
+  column: {
     flex: 1,
-    paddingHorizontal: 8,
-  },
-  fullWidth: {
-    flex: 1,
-    paddingHorizontal: 8,
-    width: '100%',
+    paddingHorizontal: 10,
   },
   detailItem: {
-    backgroundColor: '#f8f9fa',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#eee',
+    marginBottom: 20,
+    flexDirection: 'column',
   },
-  detailValue: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-    marginBottom: 4,
+  fullWidthItem: {
+    marginBottom: 20,
   },
-  detailLabel: {
-    fontSize: 12,
-    color: '#666',
+  label: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 4,
     textTransform: 'uppercase',
+  },
+  value: {
+    fontSize: 16,
+    color: '#1F2937',
+    fontWeight: '600',
+    marginBottom: 2,
   },
   deleteButton: {
     position: 'absolute',

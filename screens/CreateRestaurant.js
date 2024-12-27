@@ -21,26 +21,35 @@ export default function CreateRestaurant({ navigation }) {
   const { createRestaurant } = useRestaurants();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    restaurantCode: '',
     name: '',
     fssaiNumber: '',
     gstNumber: '',
     mobile: '',
+    restaurantType: 'Restaurant',
+    address: '',
+    ownerName: '',
+    status: 'Active',
+    vegNonveg: 'veg',
     serviceCharges: '1',
     gst: '1',
-    vegNonveg: 'Vegetarian',
-    owner: '',
-    restaurantType: 'Fine Dining',
     upiId: '',
-    image: null,
-    website: '',
-    instagram: '',
+    isOpen: true,
+    totalCategory: '0',
+    totalMenu: '0',
+    totalCompletedOrders: '0',
+    totalCancledOrders: '0',
     facebook: '',
-    whatsapp: '',
+    instagram: '',
     googleReview: '',
     googleBusinessLink: '',
-    hotelStatus: true,
-    isOpen: true,
-    address: '',
+    whatsapp: '',
+    website: '',
+    image: null,
+    createdOn: new Date().toLocaleDateString(),
+    createdBy: 'admin',
+    updatedOn: new Date().toLocaleDateString(),
+    updatedBy: 'admin'
   });
 
   const handleImagePick = async () => {
@@ -103,6 +112,16 @@ export default function CreateRestaurant({ navigation }) {
           <Text style={styles.sectionTitle}>Basic Information</Text>
           
           <View style={styles.inputGroup}>
+            <Text style={styles.label}>Restaurant Code *</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Restaurant Code"
+              value={formData.restaurantCode}
+              onChangeText={(text) => setFormData({ ...formData, restaurantCode: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
             <Text style={styles.label}>Name *</Text>
             <TextInput
               style={styles.input}
@@ -123,7 +142,7 @@ export default function CreateRestaurant({ navigation }) {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>GST Number *</Text>
+            <Text style={styles.label}>GST Number</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter GST Number"
@@ -136,205 +155,27 @@ export default function CreateRestaurant({ navigation }) {
             <Text style={styles.label}>Mobile *</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter Mobile"
-              keyboardType="phone-pad"
+              placeholder="Enter Mobile Number"
               value={formData.mobile}
+              keyboardType="phone-pad"
               onChangeText={(text) => setFormData({ ...formData, mobile: text })}
             />
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Service Charges *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="1"
-              keyboardType="numeric"
-              value={formData.serviceCharges}
-              onChangeText={(text) => setFormData({ ...formData, serviceCharges: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>GST *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="1"
-              keyboardType="numeric"
-              value={formData.gst}
-              onChangeText={(text) => setFormData({ ...formData, gst: text })}
-            />
-          </View>
-        </View>
-
-        {/* Restaurant Details */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Restaurant Details</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Veg/Non-veg *</Text>
-            <Picker
-              selectedValue={formData.vegNonveg}
-              style={styles.picker}
-              onValueChange={(itemValue) => setFormData({ ...formData, vegNonveg: itemValue })}
-            >
-              <Picker.Item label="Vegetarian" value="Vegetarian" />
-              <Picker.Item label="Non-Vegetarian" value="Non-Vegetarian" />
-              <Picker.Item label="Both" value="Both" />
-            </Picker>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Owner *</Text>
+            <Text style={styles.label}>Restaurant Type</Text>
             <View style={styles.pickerContainer}>
               <Picker
-                selectedValue={formData.owner}
                 style={styles.picker}
-                onValueChange={(itemValue) => setFormData({ ...formData, owner: itemValue })}
-              >
-                <Picker.Item label="Select Owner" value="" />
-                {owners.map((owner) => (
-                  <Picker.Item 
-                    key={owner.id} 
-                    label={owner.name} 
-                    value={owner.id} 
-                  />
-                ))}
-              </Picker>
-            </View>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Restaurant Type *</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
                 selectedValue={formData.restaurantType}
-                style={styles.picker}
-                onValueChange={(itemValue) => setFormData({ ...formData, restaurantType: itemValue })}
+                onValueChange={(value) => setFormData({ ...formData, restaurantType: value })}
               >
+                <Picker.Item label="Restaurant" value="Restaurant" />
                 <Picker.Item label="Fine Dining" value="Fine Dining" />
-                <Picker.Item label="Casual Dining" value="Casual Dining" />
-                <Picker.Item label="Fast Food" value="Fast Food" />
                 <Picker.Item label="Cafe" value="Cafe" />
-                <Picker.Item label="Buffet" value="Buffet" />
+                <Picker.Item label="Fast Food" value="Fast Food" />
               </Picker>
             </View>
-          </View>
-        </View>
-
-        {/* Payment and Social Media */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment and Social Media</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>UPI ID *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter UPI ID"
-              value={formData.upiId}
-              onChangeText={(text) => setFormData({ ...formData, upiId: text })}
-            />
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Restaurant Image</Text>
-            <TouchableOpacity 
-              style={styles.imageButton} 
-              onPress={handleImagePick}
-            >
-              <FontAwesome name="image" size={24} color="#666" />
-              <Text style={styles.imageButtonText}>
-                {formData.image ? 'Change Image' : 'Select Image'}
-              </Text>
-            </TouchableOpacity>
-            
-            {formData.image && (
-              <Image
-                source={{ uri: formData.image }}
-                style={styles.previewImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Website</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Website"
-              value={formData.website}
-              onChangeText={(text) => setFormData({ ...formData, website: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Instagram</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Instagram"
-              value={formData.instagram}
-              onChangeText={(text) => setFormData({ ...formData, instagram: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Facebook</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Facebook"
-              value={formData.facebook}
-              onChangeText={(text) => setFormData({ ...formData, facebook: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>WhatsApp</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter WhatsApp"
-              value={formData.whatsapp}
-              onChangeText={(text) => setFormData({ ...formData, whatsapp: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Google Review</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Google Review"
-              value={formData.googleReview}
-              onChangeText={(text) => setFormData({ ...formData, googleReview: text })}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Google Business Link</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Google Business Link"
-              value={formData.googleBusinessLink}
-              onChangeText={(text) => setFormData({ ...formData, googleBusinessLink: text })}
-            />
-          </View>
-        </View>
-
-        {/* Status */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Status</Text>
-
-          <View style={styles.switchGroup}>
-            <Text style={styles.label}>Hotel Status</Text>
-            <Switch
-              value={formData.hotelStatus}
-              onValueChange={(value) => setFormData({ ...formData, hotelStatus: value })}
-            />
-          </View>
-
-          <View style={styles.switchGroup}>
-            <Text style={styles.label}>Is Open</Text>
-            <Switch
-              value={formData.isOpen}
-              onValueChange={(value) => setFormData({ ...formData, isOpen: value })}
-            />
           </View>
 
           <View style={styles.inputGroup}>
@@ -348,6 +189,148 @@ export default function CreateRestaurant({ navigation }) {
               onChangeText={(text) => setFormData({ ...formData, address: text })}
             />
           </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Owner Name *</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Owner Name"
+              value={formData.ownerName}
+              onChangeText={(text) => setFormData({ ...formData, ownerName: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Veg/Non-veg</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                style={styles.picker}
+                selectedValue={formData.vegNonveg}
+                onValueChange={(value) => setFormData({ ...formData, vegNonveg: value })}
+              >
+                <Picker.Item label="Veg" value="veg" />
+                <Picker.Item label="Non-veg" value="nonveg" />
+                <Picker.Item label="Both" value="both" />
+              </Picker>
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Service Charges (%)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Service Charges"
+              value={formData.serviceCharges}
+              keyboardType="numeric"
+              onChangeText={(text) => setFormData({ ...formData, serviceCharges: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>GST (%)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter GST"
+              value={formData.gst}
+              keyboardType="numeric"
+              onChangeText={(text) => setFormData({ ...formData, gst: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>UPI ID</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter UPI ID"
+              value={formData.upiId}
+              onChangeText={(text) => setFormData({ ...formData, upiId: text })}
+            />
+          </View>
+
+          <View style={styles.switchGroup}>
+            <Text style={styles.label}>Is Open</Text>
+            <Switch
+              value={formData.isOpen}
+              onValueChange={(value) => setFormData({ ...formData, isOpen: value })}
+            />
+          </View>
+        </View>
+
+        {/* Social Media */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Social Media</Text>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Facebook</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Facebook URL"
+              value={formData.facebook}
+              onChangeText={(text) => setFormData({ ...formData, facebook: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Instagram</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Instagram URL"
+              value={formData.instagram}
+              onChangeText={(text) => setFormData({ ...formData, instagram: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Google Review</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Google Review URL"
+              value={formData.googleReview}
+              onChangeText={(text) => setFormData({ ...formData, googleReview: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Google Business Link</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Google Business URL"
+              value={formData.googleBusinessLink}
+              onChangeText={(text) => setFormData({ ...formData, googleBusinessLink: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>WhatsApp</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter WhatsApp Number"
+              value={formData.whatsapp}
+              onChangeText={(text) => setFormData({ ...formData, whatsapp: text })}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Website</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Website URL"
+              value={formData.website}
+              onChangeText={(text) => setFormData({ ...formData, website: text })}
+            />
+          </View>
+        </View>
+
+        {/* Image Upload */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Restaurant Image</Text>
+          <TouchableOpacity style={styles.imageButton} onPress={handleImagePick}>
+            <FontAwesome name="image" size={24} color="#666" />
+            <Text style={styles.imageButtonText}>Choose Image</Text>
+          </TouchableOpacity>
+          {formData.image && (
+            <Image source={{ uri: formData.image }} style={styles.previewImage} />
+          )}
         </View>
 
         <TouchableOpacity 

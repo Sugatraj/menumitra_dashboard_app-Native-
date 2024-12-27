@@ -72,80 +72,104 @@ export default function OrderDetails({ route }) {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Order Info - First Row */}
+      {/* Details Section - 2 Columns */}
       <View style={styles.section}>
-        <View style={styles.orderGrid}>
-          {/* Left Column */}
-          <View style={styles.gridColumn}>
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>{order.orderNumber}</Text>
-              <Text style={styles.label}>ORDER NUMBER</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>{order.paymentMethod}</Text>
-              <Text style={styles.label}>PAYMENT METHOD</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>₹{order.totalBillAmount.toFixed(2)}</Text>
-              <Text style={styles.label}>TOTAL BILL AMOUNT</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>₹{order.serviceChargesAmount.amount} ({order.serviceChargesAmount.percentage}%)</Text>
-              <Text style={styles.label}>SERVICE CHARGES AMOUNT</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>₹{order.grandTotal}</Text>
-              <Text style={styles.label}>GRAND TOTAL</Text>
-            </View>
-          </View>
-
-          {/* Right Column */}
-          <View style={styles.gridColumn}>
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>₹{order.totalBillAmount.toFixed(2)}</Text>
-              <Text style={styles.label}>TOTAL BILL AMOUNT</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>{order.restaurantName}</Text>
-              <Text style={styles.label}>RESTAURANT NAME</Text>
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <View style={[styles.statusBadge, { backgroundColor: '#4CAF50' }]}>
-                <Text style={styles.statusText}>{order.orderStatus}</Text>
+        <View style={styles.detailsContainer}>
+          {/* Row 1 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.orderNumber}</Text>
+                <Text style={styles.label}>Order Number</Text>
               </View>
-              <Text style={styles.label}>ORDER STATUS</Text>
             </View>
-
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>₹{order.gstAmount.amount} ({order.gstAmount.percentage}%)</Text>
-              <Text style={styles.label}>GST AMOUNT</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      {/* Second Row */}
-      <View style={styles.section}>
-        <View style={styles.orderGrid}>
-          {/* Left Column */}
-          <View style={styles.gridColumn}>
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>{order.customerName}</Text>
-              <Text style={styles.label}>CUSTOMER NAME</Text>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.customerName}</Text>
+                <Text style={styles.label}>Customer Name</Text>
+              </View>
             </View>
           </View>
 
-          {/* Right Column */}
-          <View style={styles.gridColumn}>
-            <View style={styles.fieldGroup}>
-              <Text style={styles.value}>{order.table}</Text>
-              <Text style={styles.label}>TABLE</Text>
+          {/* Row 2 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.restaurantName}</Text>
+                <Text style={styles.label}>Restaurant Name</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.table}</Text>
+                <Text style={styles.label}>Table</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Row 3 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.paymentMethod}</Text>
+                <Text style={styles.label}>Payment Method</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <View style={[styles.statusBadge, { backgroundColor: '#4CAF50' }]}>
+                  <Text style={styles.statusText}>{order.orderStatus}</Text>
+                </View>
+                <Text style={styles.label}>Order Status</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Row 4 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{order.totalBillAmount.toFixed(2)}</Text>
+                <Text style={styles.label}>Total Bill Amount</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{order.grandTotal}</Text>
+                <Text style={styles.label}>Grand Total</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Row 5 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{order.serviceChargesAmount.amount} ({order.serviceChargesAmount.percentage}%)</Text>
+                <Text style={styles.label}>Service Charges</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{order.gstAmount.amount} ({order.gstAmount.percentage}%)</Text>
+                <Text style={styles.label}>GST Amount</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Row 6 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>₹{order.discountAmount.amount} ({order.discountAmount.percentage}%)</Text>
+                <Text style={styles.label}>Discount</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{order.createdOn}</Text>
+                <Text style={styles.label}>Created On</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -196,40 +220,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#333',
+  detailsContainer: {
+    padding: 4,
   },
-  orderGrid: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginHorizontal: -10,
   },
-  gridColumn: {
+  column: {
     flex: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
   },
-  fieldGroup: {
-    marginBottom: 16,
+  detailItem: {
+    marginBottom: 20,
+    flexDirection: 'column',
   },
   value: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-    marginBottom: 4,
+    fontSize: 16,
+    color: '#1F2937',
+    fontWeight: '600',
+    marginBottom: 2,
   },
   label: {
-    fontSize: 11,
-    color: '#666',
-    fontWeight: '500',
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 4,
     textTransform: 'uppercase',
-  },
-  amount: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '600',
-    marginBottom: 4,
   },
   statusBadge: {
     paddingHorizontal: 12,
@@ -242,71 +259,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
-  },
-  itemCard: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    paddingVertical: 12,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-  },
-  itemQuantity: {
-    fontSize: 16,
-    color: '#666',
-  },
-  itemPricing: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: '#666',
-  },
-  itemTotal: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
-  totalSection: {
-    marginTop: 16,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  totalLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  totalAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  column: {
-    flex: 1,
-    paddingHorizontal: 8,
-  },
-  grandTotalRow: {
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingTop: 16,
   },
   tableHeader: {
     flexDirection: 'row',

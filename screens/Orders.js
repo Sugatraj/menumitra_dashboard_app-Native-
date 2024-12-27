@@ -58,43 +58,40 @@ export default function Orders({ route, navigation }) {
     >
       <View style={styles.orderGrid}>
         {/* Left Column */}
-        <View style={styles.gridColumn}>
-          <View style={styles.fieldGroup}>
-            <View>
-              <Text style={styles.value}>Table No:{item.tableNumber}</Text>
-              <Text style={styles.value}>Section Name:{item.sectionName}</Text>
-            </View>
-            <Text style={styles.label}>TABLE</Text>
+        <View style={styles.column}>
+          <View style={styles.detailItem}>
+            <Text style={styles.value}>Table {item.tableNumber}</Text>
+            <Text style={styles.label}>Table Number</Text>
           </View>
 
-          <View style={styles.fieldGroup}>
+          <View style={styles.detailItem}>
             <Text style={styles.value}>{item.orderNumber}</Text>
-            <Text style={styles.label}>ORDER NUMBER</Text>
+            <Text style={styles.label}>Order Number</Text>
           </View>
 
-          <View style={styles.fieldGroup}>
+          <View style={styles.detailItem}>
             <Text style={styles.value}>{item.createdOn}</Text>
-            <Text style={styles.label}>CREATED ON</Text>
+            <Text style={styles.label}>Created On</Text>
           </View>
         </View>
 
         {/* Right Column */}
-        <View style={styles.gridColumn}>
-          <View style={styles.fieldGroup}>
+        <View style={styles.column}>
+          <View style={styles.detailItem}>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.orderStatus) }]}>
               <Text style={styles.statusText}>{item.orderStatus}</Text>
             </View>
-            <Text style={styles.label}>ORDER STATUS</Text>
+            <Text style={styles.label}>Status</Text>
           </View>
 
-          <View style={styles.fieldGroup}>
+          <View style={styles.detailItem}>
             <Text style={styles.value}>{item.menuCount}</Text>
-            <Text style={styles.label}>MENU COUNT</Text>
+            <Text style={styles.label}>Menu Count</Text>
           </View>
 
-          <View style={styles.fieldGroup}>
-            <Text style={styles.amount}>{item.totalBillAmount.toFixed(2)} Rs.</Text>
-            <Text style={styles.label}>TOTAL BILL AMOUNT</Text>
+          <View style={styles.detailItem}>
+            <Text style={styles.value}>₹{item.totalBillAmount.toFixed(2)}</Text>
+            <Text style={styles.label}>Total Amount</Text>
           </View>
         </View>
       </View>
@@ -148,31 +145,27 @@ const styles = StyleSheet.create({
   orderGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginHorizontal: -10,
   },
-  gridColumn: {
+  column: {
     flex: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
   },
-  fieldGroup: {
-    marginBottom: 16,
+  detailItem: {
+    marginBottom: 20,
+    flexDirection: 'column',
   },
   value: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-    marginBottom: 4,
+    fontSize: 16,
+    color: '#1F2937',
+    fontWeight: '600',
+    marginBottom: 2,
   },
   label: {
-    fontSize: 11,
-    color: '#666',
-    fontWeight: '500',
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 4,
     textTransform: 'uppercase',
-  },
-  amount: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '600',
-    marginBottom: 4,
   },
   statusBadge: {
     paddingHorizontal: 12,

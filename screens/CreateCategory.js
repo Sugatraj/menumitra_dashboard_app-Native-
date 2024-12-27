@@ -121,7 +121,6 @@ export default function CreateCategory({ route, navigation }) {
 
         {/* Category Name Input */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Basic Information</Text>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Name *</Text>
             <TextInput
@@ -163,12 +162,6 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
   },
   inputGroup: {
     marginBottom: 15,

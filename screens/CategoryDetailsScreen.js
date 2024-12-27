@@ -117,30 +117,45 @@ export default function CategoryDetailsScreen({ route, navigation }) {
           )}
         </View>
 
-        {/* Details Section */}
+        {/* Details Section - 2 Columns */}
         <View style={styles.detailsContainer}>
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Name</Text>
-            <Text style={styles.value}>{category.name}</Text>
+          {/* Row 1 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{category.name}</Text>
+                <Text style={styles.label}>Name</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{category.menuItems?.length || 0}</Text>
+                <Text style={styles.label}>Menu Items</Text>
+              </View>
+            </View>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Created On</Text>
-            <Text style={styles.value}>
-              {new Date(category.createdAt).toLocaleDateString()}
-            </Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Menu Items</Text>
-            <Text style={styles.value}>
-              {category.menuItems?.length || 0} items
-            </Text>
+          {/* Row 2 */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>
+                  {new Date(category.createdAt).toLocaleDateString()}
+                </Text>
+                <Text style={styles.label}>Created On</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={[styles.value, { color: '#28a745' }]}>Active</Text>
+                <Text style={styles.label}>Status</Text>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>
 
-      {/* Delete Button - Top Right */}
+      {/* Delete Button */}
       <TouchableOpacity 
         style={styles.deleteButton}
         onPress={handleDelete}
@@ -148,7 +163,7 @@ export default function CategoryDetailsScreen({ route, navigation }) {
         <FontAwesome name="trash" size={24} color="#dc3545" />
       </TouchableOpacity>
 
-      {/* Update FAB - Bottom Right */}
+      {/* Update FAB */}
       <TouchableOpacity 
         style={styles.fab}
         onPress={() => navigation.navigate('UpdateCategory', { 
@@ -195,25 +210,30 @@ const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
   },
-  detailRow: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    marginHorizontal: -10,
   },
-  label: {
-    fontSize: 16,
-    color: '#666',
+  column: {
     flex: 1,
+    paddingHorizontal: 10,
+  },
+  detailItem: {
+    marginBottom: 20,
+    flexDirection: 'column',
   },
   value: {
     fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
-    flex: 2,
-    textAlign: 'right',
+    color: '#1F2937',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  label: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 4,
+    textTransform: 'uppercase',
   },
   deleteButton: {
     position: 'absolute',

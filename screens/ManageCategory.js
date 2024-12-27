@@ -62,18 +62,14 @@ export default function ManageCategory({ route, navigation }) {
       })}
     >
       <View style={styles.cardContent}>
-        <View style={styles.leftContent}>
+        <View style={styles.mainContent}>
           <Text style={styles.categoryName}>{item.name}</Text>
-          <Text style={styles.dateText}>
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-        <View style={styles.rightContent}>
-          <View style={styles.menuCountContainer}>
-            <FontAwesome name="cutlery" size={16} color="#666" />
+          <View style={styles.menuInfo}>
+            <FontAwesome name="cutlery" size={14} color="#666" />
             <Text style={styles.menuCount}>{item.menuCount}</Text>
           </View>
         </View>
+        <FontAwesome name="angle-right" size={20} color="#666" />
       </View>
     </TouchableOpacity>
   );
@@ -141,12 +137,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  leftContent: {
+  mainContent: {
     flex: 1,
-  },
-  rightContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   categoryName: {
     fontSize: 16,
@@ -154,23 +146,15 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 4,
   },
-  dateText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  menuCountContainer: {
+  menuInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    marginTop: 4,
   },
   menuCount: {
     marginLeft: 6,
     fontSize: 14,
     color: '#666',
-    fontWeight: '500',
   },
   fab: {
     position: 'absolute',

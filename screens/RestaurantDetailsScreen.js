@@ -112,9 +112,8 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
       <ScrollView 
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
       >
-        {/* Action Buttons Section First */}
+        {/* Action Buttons */}
         <View style={styles.actionButtonsContainer}>
           <TouchableOpacity 
             style={styles.actionButton}
@@ -157,7 +156,7 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Restaurant Image After Buttons */}
+        {/* Restaurant Image */}
         {restaurant.image ? (
           <Image
             source={{ uri: restaurant.image }}
@@ -170,126 +169,232 @@ export default function RestaurantDetailsScreen({ route, navigation }) {
           </View>
         )}
 
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.title}>{restaurant.name}</Text>
-            <Text style={styles.subtitle}>{restaurant.restaurantType}</Text>
-          </View>
-          <View style={styles.headerButtons}>
-         
-            <TouchableOpacity
-              style={[styles.headerButton, styles.deleteButton]}
-              onPress={handleDelete}
-            >
-              <FontAwesome name="trash" size={20} color="#dc3545" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Basic Information</Text>
-          
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>FSSAI Number</Text>
-            <Text style={styles.value}>{restaurant.fssaiNumber}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>GST Number</Text>
-            <Text style={styles.value}>{restaurant.gstNumber}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Mobile</Text>
-            <Text style={styles.value}>{restaurant.mobile}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Service Charges</Text>
-            <Text style={styles.value}>{restaurant.serviceCharges}%</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>GST</Text>
-            <Text style={styles.value}>{restaurant.gst}%</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Restaurant Details</Text>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Type</Text>
-            <Text style={styles.value}>{restaurant.vegNonveg}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Owner</Text>
-            <Text style={styles.value}>{owner ? owner.name : 'Not assigned'}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>UPI ID</Text>
-            <Text style={styles.value}>{restaurant.upiId}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Status</Text>
-            <Text style={[
-              styles.statusText,
-              { color: restaurant.hotelStatus ? '#28a745' : '#dc3545' }
-            ]}>
-              {restaurant.hotelStatus ? 'Active' : 'Inactive'}
-            </Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Currently</Text>
-            <Text style={[
-              styles.statusText,
-              { color: restaurant.isOpen ? '#28a745' : '#dc3545' }
-            ]}>
-              {restaurant.isOpen ? 'Open' : 'Closed'}
-            </Text>
-          </View>
-        </View>
-
-        {restaurant.address && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Address</Text>
-            <Text style={styles.address}>{restaurant.address}</Text>
-          </View>
-        )}
-
-        {(restaurant.website || restaurant.instagram || restaurant.facebook) && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Social Media</Text>
-            {restaurant.website && (
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Website</Text>
-                <Text style={styles.link}>{restaurant.website}</Text>
+        {/* Details Container */}
+        <View style={styles.detailsContainer}>
+          {/* Basic Info */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.restaurantCode || '-'}</Text>
+                <Text style={styles.label}>Restaurant Code</Text>
               </View>
-            )}
-            {restaurant.instagram && (
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Instagram</Text>
-                <Text style={styles.link}>{restaurant.instagram}</Text>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.name || '-'}</Text>
+                <Text style={styles.label}>Name</Text>
               </View>
-            )}
-            {restaurant.facebook && (
-              <View style={styles.infoRow}>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.fssaiNumber || '-'}</Text>
+                <Text style={styles.label}>FSSAI Number</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.gstNumber || '-'}</Text>
+                <Text style={styles.label}>GST Number</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.mobile || '-'}</Text>
+                <Text style={styles.label}>Mobile</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.restaurantType || '-'}</Text>
+                <Text style={styles.label}>Restaurant Type</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.address || '-'}</Text>
+                <Text style={styles.label}>Address</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.ownerName || '-'}</Text>
+                <Text style={styles.label}>Owner Name</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={[styles.value, { color: restaurant.status === 'Active' ? '#28a745' : '#dc3545' }]}>
+                  {restaurant.status || '-'}
+                </Text>
+                <Text style={styles.label}>Status</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.vegNonveg || '-'}</Text>
+                <Text style={styles.label}>Veg Nonveg</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.serviceCharges || '0'}%</Text>
+                <Text style={styles.label}>Service Charges</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.gst || '0'}%</Text>
+                <Text style={styles.label}>GST</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.upiId || '-'}</Text>
+                <Text style={styles.label}>UPI ID</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.isOpen ? 'Open' : 'Closed'}</Text>
+                <Text style={styles.label}>Is Open</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Statistics */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.totalCategory || '0'}</Text>
+                <Text style={styles.label}>Total Category</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.totalMenu || '0'}</Text>
+                <Text style={styles.label}>Total Menu</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.totalCompletedOrders || '0'}</Text>
+                <Text style={styles.label}>Total Completed Orders</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.totalCancledOrders || '0'}</Text>
+                <Text style={styles.label}>Total Canceled Orders</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Social Media */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.facebook || '-'}</Text>
                 <Text style={styles.label}>Facebook</Text>
-                <Text style={styles.link}>{restaurant.facebook}</Text>
               </View>
-            )}
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.instagram || '-'}</Text>
+                <Text style={styles.label}>Instagram</Text>
+              </View>
+            </View>
           </View>
-        )}
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.googleReview || '-'}</Text>
+                <Text style={styles.label}>Google Review</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.googleBusinessLink || '-'}</Text>
+                <Text style={styles.label}>Google Business Link</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.whatsapp || '-'}</Text>
+                <Text style={styles.label}>WhatsApp</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.website || '-'}</Text>
+                <Text style={styles.label}>Website</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Audit Info */}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.createdOn || '-'}</Text>
+                <Text style={styles.label}>Created On</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.createdBy || '-'}</Text>
+                <Text style={styles.label}>Created By</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.updatedOn || '-'}</Text>
+                <Text style={styles.label}>Updated On</Text>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.detailItem}>
+                <Text style={styles.value}>{restaurant.updatedBy || '-'}</Text>
+                <Text style={styles.label}>Updated By</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </ScrollView>
 
+      {/* FAB */}
       <TouchableOpacity 
         style={styles.fab}
         onPress={() => navigation.navigate('UpdateRestaurant', { 
-          restaurantId: restaurant.id
+          restaurantId: restaurantId,
+          restaurant: restaurant // Pass the current restaurant data
         })}
       >
         <FontAwesome name="edit" size={24} color="white" />
@@ -306,152 +411,33 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  scrollViewContent: {
-    flexGrow: 1,
+  detailsContainer: {
+    padding: 20,
   },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-  },
-  header: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    marginHorizontal: -10,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 5,
-  },
-  editButton: {
-    padding: 10,
-  },
-  section: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 15,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  label: {
-    fontSize: 16,
-    color: '#666',
+  column: {
     flex: 1,
+    paddingHorizontal: 10,
+  },
+  detailItem: {
+    marginBottom: 20,
+    flexDirection: 'column',
   },
   value: {
     fontSize: 16,
-    color: '#333',
-    flex: 2,
-    textAlign: 'right',
+    color: '#1F2937',
+    fontWeight: '600',
+    marginBottom: 2,
   },
-  statusText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  address: {
-    fontSize: 16,
-    color: '#333',
-    lineHeight: 24,
-  },
-  link: {
-    fontSize: 16,
-    color: '#0066cc',
-    flex: 2,
-    textAlign: 'right',
-  },
-  errorText: {
-    color: '#dc3545',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  linkText: {
-    color: '#0066cc',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerButton: {
-    padding: 10,
-    marginLeft: 10,
-    borderRadius: 5,
-  },
-  editButton: {
-    backgroundColor: '#e8f5e9',
-  },
-  deleteButton: {
-    backgroundColor: '#ffebee',
-  },
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#67B279',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  actionButtonsContainer: {
-    padding: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  actionButton: {
-    backgroundColor: '#67B279',
-    borderRadius: 8,
-    padding: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    width: '48%',
-    height: 45,
-    marginBottom: 10,
-  },
-  actionButtonText: {
-    color: '#fff',
-    marginLeft: 6,
+  label: {
     fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
+    color: '#6B7280',
+    marginTop: 4,
+    textTransform: 'uppercase',
   },
   restaurantImage: {
     width: '50%',
@@ -470,5 +456,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  actionButtonsContainer: {
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    backgroundColor: '#67B279',
+    borderRadius: 8,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '48%',
+    height: 45,
+    marginBottom: 10,
+  },
+  actionButtonText: {
+    color: '#fff',
+    marginLeft: 6,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#67B279',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
   },
 }); 
